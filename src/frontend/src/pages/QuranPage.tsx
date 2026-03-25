@@ -72,7 +72,12 @@ function getAudioUrl(surah: number, ayah: number) {
 function FullSurahPlayer({
   surahNumber,
   ayahs,
-}: { surahNumber: number; ayahs: SurahAyah[] }) {
+  onIndexChange,
+}: {
+  surahNumber: number;
+  ayahs: SurahAyah[];
+  onIndexChange?: (idx: number) => void;
+}) {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -80,11 +85,16 @@ function FullSurahPlayer({
 
   const currentAyah = ayahs[currentIdx];
 
+  useEffect(() => {
+    onIndexChange?.(currentIdx);
+  }, [currentIdx, onIndexChange]);
+
   const playNext = useCallback(() => {
     const nextIdx = currentIdxRef.current + 1;
     if (nextIdx < ayahs.length) {
       currentIdxRef.current = nextIdx;
       setCurrentIdx(nextIdx);
+      setIsPlaying(true);
     } else {
       setIsPlaying(false);
     }
@@ -177,8 +187,8 @@ function FullSurahPlayer({
 export default function QuranPage() {
   const { t } = useI18n();
   const searchParams = useSearch({ strict: false }) as { q?: string };
-  const [surahNum, setSurahNum] = useState(1);
-  const [ayahNum, setAyahNum] = useState(1);
+  const [surahNum, setSurahNum] = useState("1");
+  const [ayahNum, setAyahNum] = useState("1");
   const [arabicData, setArabicData] = useState<QuranVerseData | null>(null);
   const [translationText, setTranslationText] = useState<string | null>(null);
   const [transliterationText, setTransliterationText] = useState<string | null>(
@@ -191,7 +201,7 @@ export default function QuranPage() {
   const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
   const [pickerSurah, setPickerSurah] = useState(1);
   const [sheetMode, setSheetMode] = useState<"choice" | "ayah-input">("choice");
-  const [sheetAyahNum, setSheetAyahNum] = useState(1);
+  const [sheetAyahNum, setSheetAyahNum] = useState("1");
 
   const [fullSurahAyahs, setFullSurahAyahs] = useState<SurahAyah[] | null>(
     null,
@@ -205,8 +215,8 @@ export default function QuranPage() {
 
   const handleFetch = useCallback(
     (s: number, a: number) => {
-      setSurahNum(s);
-      setAyahNum(a);
+      setSurahNum(String(s));
+      setAyahNum(String(a));
       setArabicData(null);
       setTranslationText(null);
       setTransliterationText(null);
@@ -290,7 +300,7 @@ export default function QuranPage() {
   const openBottomSheet = (s: number) => {
     setPickerSurah(s);
     setSheetMode("choice");
-    setSheetAyahNum(1);
+    setSheetAyahNum("1");
     setBottomSheetOpen(true);
   };
 
@@ -309,7 +319,7 @@ export default function QuranPage() {
   const handleSheetAyah = () => {
     setBottomSheetOpen(false);
     setSheetMode("choice");
-    handleFetch(pickerSurah, sheetAyahNum);
+    handleFetch(pickerSurah, Number.parseInt(sheetAyahNum) || 1);
   };
 
   useEffect(() => {
@@ -443,9 +453,13 @@ export default function QuranPage() {
                   min={1}
                   max={114}
                   value={surahNum}
-                  onChange={(e) => setSurahNum(Number(e.target.value))}
+                  onChange={(e) => setSurahNum(e.target.value)}
                   onKeyDown={(e) =>
-                    e.key === "Enter" && handleFetch(surahNum, ayahNum)
+                    e.key === "Enter" &&
+                    handleFetch(
+                      Number.parseInt(surahNum) || 1,
+                      Number.parseInt(ayahNum) || 1,
+                    )
                   }
                 />
               </div>
@@ -462,16 +476,25 @@ export default function QuranPage() {
                   type="number"
                   min={1}
                   value={ayahNum}
-                  onChange={(e) => setAyahNum(Number(e.target.value))}
+                  onChange={(e) => setAyahNum(e.target.value)}
                   onKeyDown={(e) =>
-                    e.key === "Enter" && handleFetch(surahNum, ayahNum)
+                    e.key === "Enter" &&
+                    handleFetch(
+                      Number.parseInt(surahNum) || 1,
+                      Number.parseInt(ayahNum) || 1,
+                    )
                   }
                 />
               </div>
               <div className="flex items-end">
                 <Button
                   data-ocid="quran.submit_button"
-                  onClick={() => handleFetch(surahNum, ayahNum)}
+                  onClick={() =>
+                    handleFetch(
+                      Number.parseInt(surahNum) || 1,
+                      Number.parseInt(ayahNum) || 1,
+                    )
+                  }
                   disabled={isPending}
                   style={{
                     backgroundColor: "oklch(var(--islamic-gold))",
@@ -558,6 +581,17 @@ export default function QuranPage() {
                       <FullSurahPlayer
                         surahNumber={fullSurahNumber}
                         ayahs={fullSurahAyahs}
+                        onIndexChange={(idx) => {
+                          const ayah = fullSurahAyahs[idx];
+                          if (ayah) {
+                            document
+                              .getElementById(`ayah-${ayah.numberInSurah}`)
+                              ?.scrollIntoView({
+                                behavior: "smooth",
+                                block: "center",
+                              });
+                          }
+                        }}
                       />
                     </div>
                   )}
@@ -566,6 +600,7 @@ export default function QuranPage() {
                     {fullSurahAyahs.map((ayah, idx) => (
                       <div
                         key={ayah.numberInSurah}
+                        id={`ayah-${ayah.numberInSurah}`}
                         className="px-6 py-5"
                         data-ocid={`quran.item.${idx + 1}`}
                       >
@@ -731,7 +766,7 @@ export default function QuranPage() {
                       min={1}
                       max={114}
                       value={surahNum}
-                      onChange={(e) => setSurahNum(Number(e.target.value))}
+                      onChange={(e) => setSurahNum(e.target.value)}
                       className="bg-white/10 border-white/20 text-white placeholder-white/40"
                     />
                   </div>
@@ -748,7 +783,7 @@ export default function QuranPage() {
                       type="number"
                       min={1}
                       value={ayahNum}
-                      onChange={(e) => setAyahNum(Number(e.target.value))}
+                      onChange={(e) => setAyahNum(e.target.value)}
                       className="bg-white/10 border-white/20 text-white placeholder-white/40"
                     />
                   </div>
@@ -756,7 +791,10 @@ export default function QuranPage() {
                 {/* biome-ignore lint/a11y/useMediaCaption: Quran recitation audio */}
                 <audio
                   controls
-                  src={getAudioUrl(surahNum, ayahNum)}
+                  src={getAudioUrl(
+                    Number.parseInt(surahNum) || 1,
+                    Number.parseInt(ayahNum) || 1,
+                  )}
                   className="w-full"
                   data-ocid="quran.editor"
                 />
@@ -861,9 +899,7 @@ export default function QuranPage() {
                         type="number"
                         min={1}
                         value={sheetAyahNum}
-                        onChange={(e) =>
-                          setSheetAyahNum(Math.max(1, Number(e.target.value)))
-                        }
+                        onChange={(e) => setSheetAyahNum(e.target.value)}
                         onKeyDown={(e) =>
                           e.key === "Enter" && handleSheetAyah()
                         }

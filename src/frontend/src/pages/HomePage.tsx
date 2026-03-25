@@ -1,6 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "@tanstack/react-router";
-import { Book, BookOpen, Clock, Search } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "../contexts/i18n";
@@ -39,7 +36,6 @@ function getNextPrayer(timings: Record<string, string>): NextPrayer | null {
       };
     }
   }
-  // Next day's Fajr
   const fajrRaw = timings.Fajr;
   if (fajrRaw) {
     const [h, m] = fajrRaw.split(":").map(Number);
@@ -176,27 +172,6 @@ const ISLAMIC_FACTS: string[] = [
   "Allahın xatırlanması qəlbə sülh gətirir — Quran bildirdi.",
   "İslam dini elmi öyrənməyi hər müsəlmana fərz buyurmuşdur.",
   "Hər çətinliyin yanında iki asanlıq var — Quran bunu iki dəfə bildirdi.",
-  "İslam 57 ölkədə rəsmi din kimi tanınır.",
-  "Dünyada 1.8 milyard müsəlman yaşayır.",
-  "Quranın nazil olması Laylətul-Qadr gecəsindən başlamışdır.",
-  "Müsəlmanlar Allaha ibadət edərkən heç bir vasitə olmadan birbaşa dua edirlər.",
-  "Peyğəmbər ﷺ həm dövlət başçısı, həm də mənəvi rəhbər idi.",
-  "İslam dininin beş sütunu: Şəhadət, Namaz, Zəkat, Oruc, Həcc.",
-  "Quranın ilk surəsi əl-Fatihə 'Açılış' mənasını daşıyır.",
-  "Quranı tamamilə əzbərləyən dünyada 10 milyondan çox insan var.",
-  "Hər gün Quran oxumaq həm dünyəvi, həm də mənəvi fayda verir.",
-  "Müsəlmanın gününü başlatması üçün Sübh namazı çox əhəmiyyətlidir.",
-  "İslam inancına görə hər insan pak olaraq — fitrət üzrə — doğulur.",
-  "Quranın 'əl-Mulk' surəsini hər gecə oxumaq qəbrin əzabından qoruduğu bildirilir.",
-  "Peyğəmbər ﷺ buyurmuşdur: 'Anana, anana, anana, sonra atana yaxşılıq et.'",
-  "İslam dininin yayılmasında Əndəlusun (İspaniya) böyük rolu olmuşdur.",
-  "Quranın 'ər-Rəhman' surəsi bir çox insan tərəfindən ən gözəl surə sayılır.",
-  "İlk İslam universiteti Qahirədə 'əl-Əzhər' adı ilə 970-ci ildə açılmışdır.",
-  "Quranın 'Bəqərə' surəsinin son iki ayəsi gecə oxunanlar üçün qoruyucu sayılır.",
-  "İslam mədəniyyəti riyaziyyat, astronomiya və tibb sahəsindəki tərəqqiyə böyük töhfə vermişdir.",
-  "Peyğəmbər ﷺ buyurmuşdur: 'Hər çətinliyin yanında asanlıq var.'",
-  "Müsəlmanlar hər gün ən az 17 rükət namaz qılırlar — 5 vaxt namazda.",
-  "Quranın 36-cı surəsi 'Yasin' adlanır və 'Ya, Sin' ərəb hərflərindən ibarətdir.",
   "Həzrət İbrahim (ə.s.) bütün peyğəmbərlərin atası hesab olunur.",
   "Quran ilk dəfə 610-cu ildə nazil olmağa başlamışdır.",
   "Zəmzəm suyunun mənşəyi Həzrət Həcərin (r.a.) Allaha olan güvənidir.",
@@ -215,22 +190,110 @@ const ISLAMIC_FACTS: string[] = [
   "İslam dininin sülhsevər olduğunu Quranın özü bir çox yerdə vurğulayır.",
   "Həzrət Yusif (ə.s.) haqqındakı surə 'ən gözəl qissə' kimi adlandırılır.",
   "Müsəlmanlar həyatını Allahın rizasını qazanmaq üçün yaşamağa çalışırlar.",
-];
-
-const QUICK_LINKS = [
-  { labelKey: "prayerTimes" as const, to: "/prayer-times", icon: "🕌" },
-  { labelKey: "quran" as const, to: "/quran", icon: "📖" },
-  { labelKey: "books" as const, to: "/books", icon: "📚" },
+  "Quranın 'əl-Kəhf' surəsini hər cümə günü oxumaq tövsiyə edilir.",
+  "İslam tarixinin ilk Quran məktəbi Mədinədə açılmışdır.",
+  "Ərəb dili dünyada ən qədim yazılı dillərdən biridir.",
+  "Peyğəmbər ﷺ buyurmuşdur: 'Kim sübh namazını qılsa, o Allahın himayəsindədir.'",
+  "Quranın 'ər-Rəhman' surəsinin 31 ayəsi 'Fəbəyyiə aləi rəbbikumə tükəzzibən' cümləsidir.",
+  "İslam mədəniyyəti 8-11-ci əsrlərdə dünya elminin mərkəzi idi.",
+  "Həzrət Əli (r.a.) Peyğəmbər ﷺ-in əmisi oğlu və damadıdır.",
+  "Zəmzəm quyusu Kəbənin 20 metr cənub-şərqindədir.",
+  "Quranı tam bir dəfə oxumaq 'Xətm' adlanır.",
+  "Müsəlmanlar bayram namazını aşkar yerdə, çöldə qılırlar.",
+  "İslam dininin yayılmasında ticarət yollarının böyük rolu olmuşdur.",
+  "Peyğəmbər ﷺ buyurmuşdur: 'Qonşusu ac olarkən tok yatan bizdən deyil.'",
+  "Quranın hər hərfini oxumaq 10 savabdır — bu 60 mindən çox savab deməkdir.",
+  "Həzrət Ömər (r.a.) İslamı qəbul etdikdən sonra müsəlmanlar aşkara çıxdı.",
+  "Müsəlmanlar cümə namazından əvvəl qüsl etmək sünnədir.",
+  "Quranın 'Mülk' surəsini hər gecə oxumaq qəbrin əzabından qoruyur.",
+  "İslam dininin ən qiymətli ibadəti namazdır.",
+  "Peyğəmbər ﷺ Mədinədə ilk İslam dövlətini qurmuşdur.",
+  "Həzrət Bilal (r.a.) ilk müəzzin — azan oxuyan şəxs -- idi.",
+  "Quranın 'Bəqərə' surəsi ən uzun surədir — 286 ayə.",
+  "İslam dininin ilk universiteti 'Darül-Hikmə' idi.",
+  "Müsəlmanlar sağ əllə yemək yeyib, sol əllə işləmir -- bu sünnədir.",
+  "Peyğəmbər ﷺ buyurmuşdur: 'Güclü müsəlman zəif müsəlmandan daha yaxşıdır.'",
+  "İslamda 'Halal' sözü 'icazəli' mənasını verir.",
+  "Quranın 1/3-i hekayələrdən, 1/3-i qanun-qaydalardan, 1/3-i isə ibadətdən bəhs edir.",
+  "Həzrət Aişə (r.a.) İslam elminin ən böyük alimələrindən biri idi.",
+  "Namaz qılmaq üçün üz-əl-ayaqları yumaq -- dəstəmaz almaq -- vacibdir.",
+  "Peyğəmbər ﷺ buyurmuşdur: 'Elmi Çindən olsa da axtarın.'",
+  "İslam dininin ən böyük günası şirkdir -- Allaha şərik qoşmaq.",
+  "Quranın 'Fatihə' surəsi hər namazda oxunur -- gündə ən az 17 dəfə.",
+  "Müsəlmanların müqəddəs şəhərləri Məkkə, Mədinə və Qüdsdür.",
+  "Peyğəmbər ﷺ Məkkəni fəth etdikdə bütün düşmənlərini bağışladı.",
+  "İslamda 'Əmanət' -- güvənilirlik -- ən yüksək əxlaq dəyərlərindən biridir.",
+  "Quranı dinləmək tilavət etmək kimi savab sayılır.",
+  "Həzrət Yaqub (ə.s.)-un oğlu Həzrət Yusif (ə.s.) Misirdə nazir oldu.",
+  "Peyğəmbər ﷺ buyurmuşdur: 'Müsəlmanın müsəlmana etdiyi ən böyük yaxşılıq onu doğru yola yönəltməkdir.'",
+  "İslam dinindəki 'Tövbə' anlayışı günahdan dönüşü ifadə edir.",
+  "Quranın 'Nuh' surəsi Həzrət Nuhun (ə.s.) həyatını anlatır.",
+  "Müsəlmanlar Allahın hər şeyi bildiyinə -- Elm sifətinə -- iman gətirir.",
+  "Ramazan ayı İslam təqviminin 9-cu ayıdır.",
+  "Peyğəmbər ﷺ buyurmuşdur: 'Hər çətinliyin arxasında asanlıq var.'",
+  "İslamda 'Xəlifə' sözü 'Allahın yer üzündəki canişini' mənasını verir.",
+  "Quranın 'Qiyamə' surəsi qiyamət gününü təsvir edir.",
+  "Müsəlmanlar Allah ilə hər an birbaşa əlaqə qura bilər -- vasitəçiyə ehtiyac yoxdur.",
+  "Peyğəmbər ﷺ-in ən çox sevdiyi ibadət nafilə namazı idi.",
+  "İslam tarixinin ən böyük fiqh alimi İmam Şafii idi.",
+  "Quranın 'Hucurat' surəsi insan münasibətlərinin əxlaqını öyrədir.",
+  "Müsəlmanlar xeyirli bir iş edərkən 'Bismillah' deyirlər.",
+  "İslam dininin 'Sünni' qolu dünyada müsəlmanların 85-90%-ni təşkil edir.",
+  "Peyğəmbər ﷺ buyurmuşdur: 'Hər kim Allah üçün bir məscid tikərsə, Allah ona Cənnətdə ev tikər.'",
+  "Həzrət İsa (ə.s.) İslamda da peyğəmbər kimi qəbul edilir.",
+  "Quranın 'Ənam' surəsinin 59-cu ayəsindəki 'Ğayb açarları' Allahın bilikləridir.",
+  "Müsəlmanlar Allahı sevir, Ondan qorxur, Ondan ümid edir -- üç əsas hissiyyat.",
+  "İslam inancına görə hər insanın iki mələyi var -- Kiraman Katibin -- əməlləri yazır.",
+  "Peyğəmbər ﷺ-in 23 illik peyğəmbərlik dövrü İslam tarixinin əsasını qoydu.",
+  "Quranın 'Taha' surəsindəki 'Rəbbim, köksümü aç' duası hər dua edənin arzusudur.",
+  "Müsəlmanların qibləsi Kəbədir -- Kəbənin içi isə boşdur.",
+  "İslam dininin 'Sədəqeyi-Cəriyyə' anlayışı ölümdən sonra da davam edən savabı ifadə edir.",
+  "Peyğəmbər ﷺ buyurmuşdur: 'Kim bir nəfəri öldürərsə, sanki bütün insanlığı öldürmüşdür.'",
+  "Həzrət Musa (ə.s.) Quranda 136 dəfə adı keçən peyğəmbərdir.",
+  "Quranın 'Zümər' surəsinin 53-cü ayəsi Allahın rəhməti haqqındadır.",
+  "Müsəlmanlar gecə namazı -- Təhəccüd -- qılmağı çox dəyərli sayır.",
+  "İslam dininin 'Elm' anlayışı dini biliklərlə dünyəvi bilikləri birləşdirir.",
+  "Peyğəmbər ﷺ buyurmuşdur: 'Ana ayaqlarının altında Cənnət var.'",
+  "Quranın sonuncu nazil olan ayəsi əl-Maidə surəsinin 3-cü ayəsidir.",
+  "Müsəlmanlar güvənə bildikləri hər kəsə salam verirlər -- bu sünnədir.",
+  "İslam inancında 'Axirət' dünya həyatından daha əhəmiyyətlidir.",
+  "Həzrət Süleyman (ə.s.) həm peyğəmbər, həm də güclü bir hökmdar idi.",
+  "Quranın 'İbrahim' surəsi Həzrət İbrahimin (ə.s.) duaları ilə doludur.",
+  "Müsəlmanlar namazda Allah ilə birbaşa danışır -- bu ən dəyərli anlar.",
+  "Peyğəmbər ﷺ buyurmuşdur: 'Ən yaxşı insan insanlara faydalı olandır.'",
+  "İslam dini 'Ehsan' anlayışını -- Allah görür kimi ibadət etmək -- tərğib edir.",
+  "Quranın 'Muminun' surəsi möminlərin sifətlərini sadalayır.",
+  "Həzrət Ömer (r.a.) İslam xilafətini genişləndirdi -- Şam, Misir, İran fəth edildi.",
+  "Müsəlmanların ən böyük bayramları Ramazan bayramı və Qurban bayramıdır.",
+  "Peyğəmbər ﷺ buyurmuşdur: 'Kim bir gülümsəməklə birisinin qəlbini sevindirsə, bu sədəqədir.'",
+  "İslam inancına görə Cənnət 8 qapılıdır, Cəhənnəm isə 7 qapılıdır.",
+  "Quranın 'Əraf' surəsi peyğəmbərlərin tarixini anlatır.",
+  "Müsəlmanlar 'İstərəm Allah istəsə' -- İnşaAllah -- deyərək gələcəkdən danışır.",
+  "Peyğəmbər ﷺ buyurmuşdur: 'Oruclu iken pis söz söyləmə, əgər biri sənə söyürsə, mən orucluyam de.'",
+  "İslam dininin ən böyük alimlərindən biri İmam Əhməd ibn Hənbəl 1 milyon hədis bilirdi.",
+  "Quranın 'Qədr' surəsi sadəcə 5 ayədir amma çox güclü mənalar daşıyır.",
+  "Müsəlmanlar 'Allahu Əkbər' -- Allah ən böyükdür -- deyərək namazı başlayır.",
+  "Həzrət Nuh (ə.s.) 950 il öz qövmünü İslama dəvət etdi.",
+  "İslam dini insanı bütün varlığın xəlifəsi olaraq yaratdı.",
+  "Peyğəmbər ﷺ buyurmuşdur: 'Ölümdən sonra 3 şey kəsilməz: sədəqeyi-cəriyyə, elm, dua edən saleh övlad.'",
+  "Quranın 'Nur' surəsi ailə həyatının əxlaqını öyrədir.",
+  "Müsəlmanlar 'La iləhə illəllah' -- Allahdan başqa ilah yoxdur -- şəhadəti ilə başlayır.",
+  "İslam tarixinin ən mühüm döyüşü Bədr döyüşü idi -- 313 müsəlman 1000 müşrikə qalib gəldi.",
+  "Həzrət Rəsulullah ﷺ-in ən sevdiyi yemək xurma idi.",
+  "Quranın 'Nisa' surəsi qadın hüquqları haqqında çox əhəmiyyətli hökmlər ehtiva edir.",
+  "Müsəlmanlar 'SubhənəAllah' deyərək Allahı paklaşdırır -- bu zikrdir.",
+  "Peyğəmbər ﷺ buyurmuşdur: 'Dinin yarısı təmizlikdir.'",
+  "İslam inancına görə Quran Allah kəlamıdır -- heç bir dəyişiklik olmadan qiyamətə qədər qalacaq.",
+  "Həzrət İdris (ə.s.) xəttatlığın banisi sayılır.",
+  "Quranın 'Şuəra' surəsi bir neçə peyğəmbərin tarixini anlatır.",
+  "Müsəlmanlar Allah üçün bir-birini sevir -- bu imanın əlamətidir.",
 ];
 
 export default function HomePage() {
   const { t } = useI18n();
-  const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
   const [nextPrayer, setNextPrayer] = useState<NextPrayer | null>(null);
   const [prayerLoading, setPrayerLoading] = useState(true);
 
-  // Random on each page load/refresh
   const randomFact = useMemo(
     () => ISLAMIC_FACTS[Math.floor(Math.random() * ISLAMIC_FACTS.length)],
     [],
@@ -241,7 +304,6 @@ export default function HomePage() {
     [],
   );
 
-  // Fetch prayer times for Baku
   useEffect(() => {
     const today = new Date();
     const day = today.getDate();
@@ -260,15 +322,6 @@ export default function HomePage() {
       .catch(() => {})
       .finally(() => setPrayerLoading(false));
   }, []);
-
-  const handleSearch = () => {
-    if (!searchQuery.trim()) return;
-    if (/^\d+:\d+$/.test(searchQuery.trim())) {
-      navigate({ to: "/quran", search: { q: searchQuery.trim() } });
-    } else {
-      navigate({ to: "/prayer-times", search: { city: searchQuery.trim() } });
-    }
-  };
 
   const currentDate = new Date().toLocaleDateString("az-AZ");
 
@@ -309,8 +362,8 @@ export default function HomePage() {
         </span>
       </motion.div>
 
-      {/* Hero */}
-      <section className="hero-gradient py-24 px-4">
+      {/* Compact Header */}
+      <section className="hero-gradient py-10 px-4">
         <div className="container mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -318,376 +371,111 @@ export default function HomePage() {
             transition={{ duration: 0.6 }}
           >
             <p
-              className="font-amiri text-2xl mb-4"
+              className="font-amiri text-2xl mb-3"
               style={{ color: "oklch(var(--islamic-gold))" }}
             >
               بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
             </p>
-            <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-4 leading-tight">
-              LightWay: {t("heroTitle")}
+            <h1 className="text-4xl font-extrabold text-white mb-2 leading-tight">
+              LightWay
             </h1>
-            <p className="text-white/70 text-lg max-w-xl mx-auto mb-10">
-              {t("heroSubtitle")}
+            <p className="text-white/60 text-base">{t("heroSubtitle")}</p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Prayer Time Card */}
+      <section className="px-4 pt-6">
+        <div className="container mx-auto max-w-lg">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="rounded-2xl p-6 card-gradient gold-glow text-white"
+            data-ocid="prayer.card"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center text-lg"
+                style={{
+                  backgroundColor: "oklch(var(--islamic-gold) / 0.2)",
+                }}
+              >
+                🕌
+              </div>
+              <h3
+                className="font-bold uppercase tracking-wider text-sm"
+                style={{ color: "oklch(var(--islamic-gold))" }}
+              >
+                {t("prayerTimesCard")}
+              </h3>
+            </div>
+            {prayerLoading ? (
+              <div className="text-white/50 text-sm mb-4">Yüklənir...</div>
+            ) : nextPrayer ? (
+              <>
+                <div
+                  className="text-xs font-semibold uppercase tracking-widest mb-1"
+                  style={{ color: "oklch(var(--islamic-gold) / 0.7)" }}
+                >
+                  Növbəti namaz — Bakı
+                </div>
+                <div className="text-4xl font-extrabold mb-0.5">
+                  {nextPrayer.name}
+                </div>
+                <div
+                  className="text-2xl font-bold mb-1"
+                  style={{ color: "oklch(var(--islamic-gold))" }}
+                >
+                  {nextPrayer.time}
+                </div>
+                <div className="text-white/60 text-sm mb-4">
+                  {nextPrayer.minutesLeft < 60
+                    ? `${nextPrayer.minutesLeft} dəqiqə sonra`
+                    : `${Math.floor(nextPrayer.minutesLeft / 60)} saat ${nextPrayer.minutesLeft % 60} dəq sonra`}
+                </div>
+              </>
+            ) : (
+              <div className="text-white/50 text-sm mb-4">{currentDate}</div>
+            )}
+            <p className="text-white/70 text-sm">{t("searchCityDesc")}</p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Bilirdinizmi Section */}
+      <section className="px-4 pt-4 pb-24">
+        <div className="container mx-auto max-w-lg">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="rounded-2xl p-6 text-white card-gradient gold-glow"
+            data-ocid="bilirdinizmi.card"
+          >
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-xl">💡</span>
+              <h3
+                className="font-bold text-lg"
+                style={{ color: "oklch(var(--islamic-gold))" }}
+              >
+                {t("didYouKnow")}
+              </h3>
+            </div>
+            <p className="text-white/80 leading-relaxed text-base">
+              {randomFact}
+            </p>
+            <p
+              className="font-amiri text-xl mt-6 text-right"
+              style={{ color: "oklch(var(--islamic-gold))" }}
+              dir="rtl"
+            >
+              ﴿ وَنُنَزِّلُ مِنَ الْقُرْآنِ مَا هُوَ شِفَاءٌ ﴾
+            </p>
+            <p className="text-white/50 text-xs mt-1 text-right">
+              {t("isrâRef")}
             </p>
           </motion.div>
-
-          {/* Search bar */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="max-w-2xl mx-auto mb-8"
-          >
-            <div
-              className="flex rounded-full overflow-hidden shadow-2xl"
-              style={{
-                backgroundColor: "rgba(255,255,255,0.1)",
-                border: "1px solid oklch(var(--islamic-gold) / 0.4)",
-              }}
-            >
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                placeholder={t("searchPlaceholder")}
-                data-ocid="hero.search_input"
-                className="flex-1 bg-transparent text-white placeholder-white/50 px-6 py-4 text-base outline-none"
-              />
-              <button
-                type="button"
-                data-ocid="hero.button"
-                onClick={handleSearch}
-                className="w-14 h-14 m-0.5 rounded-full flex items-center justify-center shrink-0 transition-opacity hover:opacity-90"
-                style={{ backgroundColor: "oklch(var(--islamic-gold))" }}
-              >
-                <Search
-                  className="w-5 h-5"
-                  style={{ color: "oklch(var(--islamic-dark))" }}
-                />
-              </button>
-            </div>
-          </motion.div>
-
-          {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="flex flex-wrap justify-center gap-4"
-          >
-            <Button
-              data-ocid="hero.primary_button"
-              size="lg"
-              className="rounded-full px-8 font-semibold text-base"
-              style={{
-                backgroundColor: "oklch(var(--islamic-gold))",
-                color: "oklch(var(--islamic-dark))",
-              }}
-              onClick={() =>
-                navigate({ to: "/quran", search: { q: undefined } })
-              }
-            >
-              <BookOpen className="w-5 h-5 mr-2" />
-              {t("startReading")}
-            </Button>
-            <Button
-              data-ocid="hero.secondary_button"
-              size="lg"
-              variant="outline"
-              className="rounded-full px-8 font-semibold text-base border-2 bg-transparent hover:bg-white/10"
-              style={{
-                borderColor: "oklch(var(--islamic-gold))",
-                color: "oklch(var(--islamic-gold))",
-              }}
-              onClick={() =>
-                navigate({ to: "/prayer-times", search: { city: undefined } })
-              }
-            >
-              <Clock className="w-5 h-5 mr-2" />
-              {t("viewPrayerTimes")}
-            </Button>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Feature Cards */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Prayer Times card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="rounded-2xl p-6 card-gradient gold-glow text-white"
-              data-ocid="feature.card"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-lg"
-                  style={{
-                    backgroundColor: "oklch(var(--islamic-gold) / 0.2)",
-                  }}
-                >
-                  🕌
-                </div>
-                <h3
-                  className="font-bold uppercase tracking-wider text-sm"
-                  style={{ color: "oklch(var(--islamic-gold))" }}
-                >
-                  {t("prayerTimesCard")}
-                </h3>
-              </div>
-              {prayerLoading ? (
-                <div className="text-white/50 text-sm mb-4">Yüklənir...</div>
-              ) : nextPrayer ? (
-                <>
-                  <div
-                    className="text-xs font-semibold uppercase tracking-widest mb-1"
-                    style={{ color: "oklch(var(--islamic-gold) / 0.7)" }}
-                  >
-                    Növbəti namaz — Bakı
-                  </div>
-                  <div className="text-4xl font-extrabold mb-0.5">
-                    {nextPrayer.name}
-                  </div>
-                  <div
-                    className="text-2xl font-bold mb-1"
-                    style={{ color: "oklch(var(--islamic-gold))" }}
-                  >
-                    {nextPrayer.time}
-                  </div>
-                  <div className="text-white/60 text-sm mb-4">
-                    {nextPrayer.minutesLeft < 60
-                      ? `${nextPrayer.minutesLeft} dəqiqə sonra`
-                      : `${Math.floor(nextPrayer.minutesLeft / 60)} saat ${nextPrayer.minutesLeft % 60} dəq sonra`}
-                  </div>
-                </>
-              ) : (
-                <div className="text-white/50 text-sm mb-4">{currentDate}</div>
-              )}
-              <p className="text-white/70 text-sm mb-6">
-                {t("searchCityDesc")}
-              </p>
-              <Button
-                data-ocid="feature.prayer.button"
-                size="sm"
-                className="rounded-full"
-                style={{
-                  backgroundColor: "oklch(var(--islamic-gold))",
-                  color: "oklch(var(--islamic-dark))",
-                }}
-                onClick={() =>
-                  navigate({ to: "/prayer-times", search: { city: undefined } })
-                }
-              >
-                {t("fullSchedule")}
-              </Button>
-            </motion.div>
-
-            {/* Quran card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="rounded-2xl p-6 card-gradient gold-glow text-white"
-              data-ocid="feature.card"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-lg"
-                  style={{
-                    backgroundColor: "oklch(var(--islamic-gold) / 0.2)",
-                  }}
-                >
-                  📖
-                </div>
-                <h3
-                  className="font-bold uppercase tracking-wider text-sm"
-                  style={{ color: "oklch(var(--islamic-gold))" }}
-                >
-                  {t("holyQuran")}
-                </h3>
-              </div>
-              <p
-                className="font-amiri text-2xl leading-loose text-right mb-3"
-                dir="rtl"
-              >
-                ﴿ بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴾
-              </p>
-              <p className="text-white/70 text-sm mb-6">{t("inNameOfAllah")}</p>
-              <Button
-                data-ocid="feature.quran.button"
-                size="sm"
-                className="rounded-full"
-                style={{
-                  backgroundColor: "oklch(var(--islamic-gold))",
-                  color: "oklch(var(--islamic-dark))",
-                }}
-                onClick={() =>
-                  navigate({ to: "/quran", search: { q: undefined } })
-                }
-              >
-                {t("readMore")}
-              </Button>
-            </motion.div>
-
-            {/* Books card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="rounded-2xl p-6 card-gradient gold-glow text-white"
-              data-ocid="feature.card"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-lg"
-                  style={{
-                    backgroundColor: "oklch(var(--islamic-gold) / 0.2)",
-                  }}
-                >
-                  📚
-                </div>
-                <h3
-                  className="font-bold uppercase tracking-wider text-sm"
-                  style={{ color: "oklch(var(--islamic-gold))" }}
-                >
-                  {t("islamicBooks")}
-                </h3>
-              </div>
-              <div className="text-5xl font-extrabold mb-1">16+</div>
-              <div className="text-white/60 text-sm mb-4">
-                {t("islamicBooksAvailable")}
-              </div>
-              <p className="text-white/70 text-sm mb-6">
-                {t("browseCuratedBooks")}
-              </p>
-              <Button
-                data-ocid="feature.books.button"
-                size="sm"
-                className="rounded-full"
-                style={{
-                  backgroundColor: "oklch(var(--islamic-gold))",
-                  color: "oklch(var(--islamic-dark))",
-                }}
-                onClick={() => navigate({ to: "/books" })}
-              >
-                {t("browseLibrary")}
-              </Button>
-            </motion.div>
-
-            {/* Arabic Learn card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="rounded-2xl p-6 card-gradient gold-glow text-white"
-              data-ocid="feature.card"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-lg"
-                  style={{
-                    backgroundColor: "oklch(var(--islamic-gold) / 0.2)",
-                  }}
-                >
-                  🎓
-                </div>
-                <h3
-                  className="font-bold uppercase tracking-wider text-sm"
-                  style={{ color: "oklch(var(--islamic-gold))" }}
-                >
-                  Ərəbcə Öyrən
-                </h3>
-              </div>
-              <p
-                className="font-amiri text-2xl leading-loose text-right mb-2"
-                dir="rtl"
-                style={{ color: "oklch(var(--islamic-gold) / 0.85)" }}
-              >
-                تَعَلَّمِ الْعَرَبِيَّةَ
-              </p>
-              <p className="text-white/60 text-sm mb-1">
-                Əlifba · Harakat · Qrammatika
-              </p>
-              <p className="text-white/70 text-sm mb-6">
-                Quran ərəbcəsinin əsaslarını öyrən — hərflər, hərəkələr, quiz.
-              </p>
-              <Button
-                data-ocid="feature.arabic.button"
-                size="sm"
-                className="rounded-full"
-                style={{
-                  backgroundColor: "oklch(var(--islamic-gold))",
-                  color: "oklch(var(--islamic-dark))",
-                }}
-                onClick={() => navigate({ to: "/arabic-learn" })}
-              >
-                Öyrən
-              </Button>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* 2-column section */}
-      <section className="py-8 px-4 pb-20">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Quick Links */}
-            <div className="bg-card rounded-2xl p-6 border border-border shadow-xs">
-              <div className="flex items-center gap-2 mb-5">
-                <Book
-                  className="w-5 h-5"
-                  style={{ color: "oklch(var(--islamic-gold))" }}
-                />
-                <h3 className="font-bold text-lg">{t("quickLinks")}</h3>
-              </div>
-              <div className="space-y-3">
-                {QUICK_LINKS.map((ql) => (
-                  <button
-                    key={ql.to}
-                    type="button"
-                    data-ocid="home.link"
-                    onClick={() => navigate({ to: ql.to })}
-                    className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-muted transition-colors text-left"
-                  >
-                    <span className="text-2xl">{ql.icon}</span>
-                    <span className="font-medium">{t(ql.labelKey)}</span>
-                    <span className="ml-auto text-muted-foreground">›</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Did you know */}
-            <div className="rounded-2xl p-6 text-white card-gradient gold-glow">
-              <div className="flex items-center gap-2 mb-5">
-                <span className="text-xl">💡</span>
-                <h3
-                  className="font-bold text-lg"
-                  style={{ color: "oklch(var(--islamic-gold))" }}
-                >
-                  {t("didYouKnow")}
-                </h3>
-              </div>
-              <p className="text-white/80 leading-relaxed text-base">
-                {randomFact}
-              </p>
-              <p
-                className="font-amiri text-xl mt-6 text-right"
-                style={{ color: "oklch(var(--islamic-gold))" }}
-                dir="rtl"
-              >
-                ﴿ وَنُنَزِّلُ مِنَ الْقُرْآنِ مَا هُوَ شِفَاءٌ ﴾
-              </p>
-              <p className="text-white/50 text-xs mt-1 text-right">
-                {t("isrâRef")}
-              </p>
-            </div>
-          </div>
         </div>
       </section>
     </div>

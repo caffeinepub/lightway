@@ -354,6 +354,32 @@ const GRAMMAR_LESSONS = [
       },
     ],
   },
+  {
+    id: "madd",
+    title: "Dərs 6: Uzanma (Mədd)",
+    explanation:
+      "Ərəb dilində 3 uzanma hərfi var: ا (elif) fəthadan sonra, و (vav) zəmmədən sonra, ي (ya) kəsrədən sonra. Bu hərflər saitın müddətini 2 dəfə uzadır. Quranda uzanma hərflərini düzgün oxumaq vacibdir.",
+    examples: [
+      {
+        arabic: "قَالَ",
+        latin: "qaala",
+        meaning: "dedi (elif ilə uzanma — 'aa' səsi)",
+      },
+      {
+        arabic: "قُولُوا",
+        latin: "quuluu",
+        meaning: "deyin (vav ilə uzanma — 'uu' səsi)",
+      },
+      {
+        arabic: "قِيلَ",
+        latin: "qiila",
+        meaning: "deyildi (ya ilə uzanma — 'ii' səsi)",
+      },
+      { arabic: "كِتَابٌ", latin: "kitaabun", meaning: "kitab (uzun 'aa')" },
+      { arabic: "نُورٌ", latin: "nuurun", meaning: "nur, işıq (uzun 'uu')" },
+      { arabic: "دِينٌ", latin: "diinun", meaning: "din (uzun 'ii')" },
+    ],
+  },
 ];
 
 const GRAMMAR_QUIZ = [
@@ -396,6 +422,36 @@ const GRAMMAR_QUIZ = [
     question: "يَكْتُبُ hansı zamanda işlənir?",
     options: ["İndiki/Gələcək", "Keçmiş", "Əmr", "İnkar"],
     answer: "İndiki/Gələcək",
+  },
+  {
+    question: "قَالَ sözündəki uzanma hərfi hansıdır?",
+    options: ["ا (elif)", "و (vav)", "ي (ya)", "Uzanma yoxdur"],
+    answer: "ا (elif)",
+  },
+  {
+    question: "Uzanma hərfi olan ي kəsrədən sonra hansı səsi uzadır?",
+    options: ["ii (uzun i)", "aa (uzun a)", "uu (uzun u)", "Heç birini"],
+    answer: "ii (uzun i)",
+  },
+  {
+    question: "قُولُوا sözündəki uzanma hərfi nədir?",
+    options: ["و (vav)", "ا (elif)", "ي (ya)", "Uzanma yoxdur"],
+    answer: "و (vav)",
+  },
+  {
+    question: "Mədd nədir?",
+    options: ["Uzanma", "Qısalma", "Şəddə", "Sukun"],
+    answer: "Uzanma",
+  },
+  {
+    question: "كِتَابٌ sözündə neçə uzanma hərfi var?",
+    options: ["1", "2", "0", "3"],
+    answer: "1",
+  },
+  {
+    question: "Fəthadan sonra gələn uzanma hərfi hansıdır?",
+    options: ["ا (elif)", "و (vav)", "ي (ya)", "Heç biri"],
+    answer: "ا (elif)",
   },
   {
     question: "مُسْلِمُونَ nə deməkdir?",
@@ -1095,6 +1151,59 @@ export default function ArabicLearnPage() {
                 </Button>
               </div>
               <Quiz questions={grammarQuiz} ocidPrefix="grammar_quiz" />
+            </section>
+
+            {/* Faydalı İpuçları */}
+            <section className="mt-6 mb-2">
+              <h2
+                className="text-lg font-bold mb-4"
+                style={{ color: "oklch(var(--islamic-gold))" }}
+              >
+                💡 Faydalı İpuçları
+              </h2>
+              <div className="space-y-3">
+                {[
+                  {
+                    tip: "Hər gün yalnız 1 ayə olsa belə, Quran oxuyun — ardıcıllıq əlifbanı tanımağa kömək edir.",
+                    icon: "📖",
+                  },
+                  {
+                    tip: "Ən çox işlənən 10 ərəb kökünü öyrənin (k-t-b, q-r-a, r-h-m, h-m-d, s-l-m, k-r-m, 3-l-m, d-kh-l, q-w-l, j-3-l). Bu köklər Quranın böyük hissəsini əhatə edir.",
+                    icon: "🔤",
+                  },
+                  {
+                    tip: "Şəms hərfləri (ش, س, ن, ر, ل və s.) ilə başlayan sözlərdə 'əl-' artikli birləşir: əş-Şəms, ər-Rəhman. Qəmər hərflərindən (ك, م, ب, ق) əvvəl isə 'əl-' ayrı oxunur.",
+                    icon: "☀️",
+                  },
+                  {
+                    tip: "Hər hərfin 4 formasını öyrənin: ayrı, söz başı, söz ortası, söz sonu. Məsələn: ب — بـ — ـبـ — ـب.",
+                    icon: "✍️",
+                  },
+                  {
+                    tip: "Həmzə (ء) hər zaman sabit deyil — sözdəki yerinə görə ا , و , ي üzərində yazılır. Bunu öyrənmək oxumanı asanlaşdırır.",
+                    icon: "🔵",
+                  },
+                  {
+                    tip: "Tanış Quran ayələrini hərəkəsiz mushafda oxumağa çalışın — bu sizi uzun mətnləri deşifrə etməyə öyrədir.",
+                    icon: "🌙",
+                  },
+                ].map((item, i) => (
+                  <div
+                    key={item.icon}
+                    className="rounded-xl p-4 flex gap-3 items-start"
+                    style={{
+                      backgroundColor: "oklch(var(--islamic-dark) / 0.6)",
+                      border: "1px solid oklch(var(--islamic-gold) / 0.2)",
+                    }}
+                    data-ocid={`arabic_tips.item.${i + 1}`}
+                  >
+                    <span className="text-xl shrink-0">{item.icon}</span>
+                    <p className="text-white/80 text-sm leading-relaxed">
+                      {item.tip}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </section>
           </TabsContent>
         </Tabs>

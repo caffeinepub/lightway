@@ -67,7 +67,9 @@ export default function AdminPage() {
       setUploadProgress(0);
       if (fileInputRef.current) fileInputRef.current.value = "";
     } catch {
-      toast.error(t("uploadError"));
+      toast.error(
+        "Kitab yüklənərkən xəta baş verdi. Backend autentifikasiyası tələb oluna bilər. Əgər xəta davam edirsə, admin token konfiqurasiyasını yoxlayın.",
+      );
     }
   };
 
