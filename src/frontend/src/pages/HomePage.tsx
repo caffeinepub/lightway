@@ -4,7 +4,6 @@ import { Book, BookOpen, Clock, Search } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "../contexts/i18n";
-import type { Lang } from "../contexts/i18n";
 
 const PRAYER_NAMES: Record<string, string> = {
   Fajr: "Sübh",
@@ -415,7 +414,7 @@ export default function HomePage() {
       {/* Feature Cards */}
       <section className="py-16 px-4">
         <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Prayer Times card */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -576,6 +575,57 @@ export default function HomePage() {
                 onClick={() => navigate({ to: "/books" })}
               >
                 {t("browseLibrary")}
+              </Button>
+            </motion.div>
+
+            {/* Arabic Learn card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="rounded-2xl p-6 card-gradient gold-glow text-white"
+              data-ocid="feature.card"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-lg"
+                  style={{
+                    backgroundColor: "oklch(var(--islamic-gold) / 0.2)",
+                  }}
+                >
+                  🎓
+                </div>
+                <h3
+                  className="font-bold uppercase tracking-wider text-sm"
+                  style={{ color: "oklch(var(--islamic-gold))" }}
+                >
+                  Ərəbcə Öyrən
+                </h3>
+              </div>
+              <p
+                className="font-amiri text-2xl leading-loose text-right mb-2"
+                dir="rtl"
+                style={{ color: "oklch(var(--islamic-gold) / 0.85)" }}
+              >
+                تَعَلَّمِ الْعَرَبِيَّةَ
+              </p>
+              <p className="text-white/60 text-sm mb-1">
+                Əlifba · Harakat · Qrammatika
+              </p>
+              <p className="text-white/70 text-sm mb-6">
+                Quran ərəbcəsinin əsaslarını öyrən — hərflər, hərəkələr, quiz.
+              </p>
+              <Button
+                data-ocid="feature.arabic.button"
+                size="sm"
+                className="rounded-full"
+                style={{
+                  backgroundColor: "oklch(var(--islamic-gold))",
+                  color: "oklch(var(--islamic-dark))",
+                }}
+                onClick={() => navigate({ to: "/arabic-learn" })}
+              >
+                Öyrən
               </Button>
             </motion.div>
           </div>

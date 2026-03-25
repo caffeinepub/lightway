@@ -11,6 +11,7 @@ import BottomNav from "./components/BottomNav";
 import MobileHeader from "./components/MobileHeader";
 import { I18nProvider } from "./contexts/i18n";
 import AdminPage from "./pages/AdminPage";
+import ArabicLearnPage from "./pages/ArabicLearnPage";
 import BooksPage from "./pages/BooksPage";
 import HomePage from "./pages/HomePage";
 import PrayerTimesPage from "./pages/PrayerTimesPage";
@@ -69,12 +70,19 @@ const adminRoute = createRoute({
   component: AdminPage,
 });
 
+const arabicLearnRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/arabic-learn",
+  component: ArabicLearnPage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   prayerTimesRoute,
   quranRoute,
   booksRoute,
   adminRoute,
+  arabicLearnRoute,
 ]);
 
 const router = createRouter({ routeTree });

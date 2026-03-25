@@ -2,8 +2,60 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BookOpen, Download, Loader2, User } from "lucide-react";
 import { motion } from "motion/react";
+import { useState } from "react";
+import { toast } from "sonner";
 import { useI18n } from "../contexts/i18n";
 import { useListBooks } from "../hooks/useQueries";
+
+function DownloadButton({
+  book,
+}: {
+  book: { id: string; title: string; blob: { getDirectURL: () => string } };
+}) {
+  const [loading, setLoading] = useState(false);
+
+  const handleDownload = async () => {
+    setLoading(true);
+    try {
+      const url = book.blob.getDirectURL();
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("HTTP error");
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = `${book.title}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+    } catch {
+      toast.error("Kitab yüklənərkən xəta baş verdi. Yenidən cəhd edin.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Button
+      size="sm"
+      className="rounded-full gap-2"
+      style={{
+        backgroundColor: "oklch(var(--islamic-gold))",
+        color: "oklch(var(--islamic-dark))",
+      }}
+      onClick={handleDownload}
+      disabled={loading}
+    >
+      {loading ? (
+        <Loader2 className="w-4 h-4 animate-spin" />
+      ) : (
+        <Download className="w-4 h-4" />
+      )}
+      {loading ? "Yüklenir..." : "Yüklə"}
+    </Button>
+  );
+}
 
 export default function BooksPage() {
   const { t } = useI18n();
@@ -22,9 +74,7 @@ export default function BooksPage() {
           <h1 className="text-4xl font-extrabold text-white mb-2">
             {t("books")}
           </h1>
-          <p className="text-white/60">
-            Read in the name of your Lord — Al-Alaq 96:1
-          </p>
+          <p className="text-white/60">Rəbbinin adı ilə oxu — əl-Ələq 96:1</p>
         </div>
       </div>
 
@@ -50,7 +100,9 @@ export default function BooksPage() {
 
         {error && (
           <div className="text-center py-10" data-ocid="books.error_state">
-            <p className="text-destructive">Error loading books.</p>
+            <p className="text-destructive">
+              Kitablar yüklənərkən xəta baş verdi.
+            </p>
           </div>
         )}
 
@@ -90,24 +142,7 @@ export default function BooksPage() {
                 <p className="text-muted-foreground text-sm leading-relaxed mb-5 line-clamp-3">
                   {book.description}
                 </p>
-                <a
-                  href={book.blob.getDirectURL()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-ocid={`books.download_button.${i + 1}`}
-                >
-                  <Button
-                    size="sm"
-                    className="rounded-full gap-2"
-                    style={{
-                      backgroundColor: "oklch(var(--islamic-gold))",
-                      color: "oklch(var(--islamic-dark))",
-                    }}
-                  >
-                    <Download className="w-4 h-4" />
-                    {t("download")}
-                  </Button>
-                </a>
+                <DownloadButton book={book} />
               </motion.div>
             ))}
           </div>

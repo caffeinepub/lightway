@@ -1,11 +1,12 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { BookOpen, BookText, Home, Moon } from "lucide-react";
+import { BookOpen, BookText, GraduationCap, Home, Moon } from "lucide-react";
 
 const NAV_ITEMS = [
   { to: "/", label: "Ana Səhifə", Icon: Home },
   { to: "/prayer-times", label: "Namaz", Icon: Moon },
   { to: "/quran", label: "Quran", Icon: BookOpen },
   { to: "/books", label: "Kitabxana", Icon: BookText },
+  { to: "/arabic-learn", label: "Ərəbcə", Icon: GraduationCap },
 ] as const;
 
 export default function BottomNav() {

@@ -2,7 +2,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSearch } from "@tanstack/react-router";
-import { BookOpen, Loader2, Pause, Play, Volume2, X } from "lucide-react";
+import {
+  BookOpen,
+  Headphones,
+  Loader2,
+  Pause,
+  Play,
+  SkipForward,
+  Volume2,
+  X,
+} from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useI18n } from "../contexts/i18n";
@@ -60,6 +69,111 @@ function getAudioUrl(surah: number, ayah: number) {
   return `https://verses.quran.com/Alafasy/mp3/${padNum(surah, 3)}${padNum(ayah, 3)}.mp3`;
 }
 
+function FullSurahPlayer({
+  surahNumber,
+  ayahs,
+}: { surahNumber: number; ayahs: SurahAyah[] }) {
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const currentIdxRef = useRef(0);
+
+  const currentAyah = ayahs[currentIdx];
+
+  const playNext = useCallback(() => {
+    const nextIdx = currentIdxRef.current + 1;
+    if (nextIdx < ayahs.length) {
+      currentIdxRef.current = nextIdx;
+      setCurrentIdx(nextIdx);
+    } else {
+      setIsPlaying(false);
+    }
+  }, [ayahs.length]);
+
+  const togglePlay = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play().catch(() => setIsPlaying(false));
+      setIsPlaying(true);
+    }
+  };
+
+  const skipNext = () => {
+    if (currentIdx < ayahs.length - 1) {
+      const nextIdx = currentIdx + 1;
+      currentIdxRef.current = nextIdx;
+      audioRef.current?.pause();
+      setCurrentIdx(nextIdx);
+    }
+  };
+
+  return (
+    <div
+      className="sticky top-0 z-10 rounded-2xl px-5 py-4 mb-4 shadow-lg"
+      style={{
+        backgroundColor: "oklch(0.18 0.05 160)",
+        border: "1px solid oklch(var(--islamic-gold) / 0.4)",
+      }}
+    >
+      <div className="flex items-center justify-between mb-2">
+        <div>
+          <p className="text-white/50 text-xs">Oynayır</p>
+          <p className="text-white font-semibold text-sm">
+            Ayə {currentAyah.numberInSurah} / {ayahs.length}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="w-10 h-10 rounded-full flex items-center justify-center text-white"
+            style={{ backgroundColor: "oklch(var(--islamic-green))" }}
+            onClick={togglePlay}
+          >
+            {isPlaying ? (
+              <Pause className="w-5 h-5" />
+            ) : (
+              <Play className="w-5 h-5" />
+            )}
+          </button>
+          <button
+            type="button"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-white border border-white/20"
+            onClick={skipNext}
+            disabled={currentIdx >= ayahs.length - 1}
+          >
+            <SkipForward className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+      <div className="w-full bg-white/10 rounded-full h-1.5">
+        <div
+          className="h-1.5 rounded-full transition-all"
+          style={{
+            width: `${((currentIdx + 1) / ayahs.length) * 100}%`,
+            backgroundColor: "oklch(var(--islamic-gold))",
+          }}
+        />
+      </div>
+      {/* biome-ignore lint/a11y/useMediaCaption: Quran recitation */}
+      <audio
+        key={currentIdx}
+        ref={audioRef}
+        src={getAudioUrl(surahNumber, currentAyah.numberInSurah)}
+        onEnded={playNext}
+        onLoadedMetadata={() => {
+          if (isPlaying) audioRef.current?.play().catch(() => {});
+        }}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+        className="hidden"
+      />
+    </div>
+  );
+}
+
 export default function QuranPage() {
   const { t } = useI18n();
   const searchParams = useSearch({ strict: false }) as { q?: string };
@@ -74,18 +188,18 @@ export default function QuranPage() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const { mutate, isPending, error } = useFetchQuranVerse();
 
-  // Bottom sheet state
   const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
   const [pickerSurah, setPickerSurah] = useState(1);
   const [sheetMode, setSheetMode] = useState<"choice" | "ayah-input">("choice");
   const [sheetAyahNum, setSheetAyahNum] = useState(1);
 
-  // Full surah state
   const [fullSurahAyahs, setFullSurahAyahs] = useState<SurahAyah[] | null>(
     null,
   );
-  const [fullSurahName, setFullSurahName] = useState<string>("");
+  const [fullSurahName, setFullSurahName] = useState("");
+  const [fullSurahNumber, setFullSurahNumber] = useState(1);
   const [showFullSurah, setShowFullSurah] = useState(false);
+  const [fullSurahAudioMode, setFullSurahAudioMode] = useState(false);
   const { mutate: mutateSurah, isPending: isSurahPending } =
     useFetchQuranSurah();
 
@@ -99,6 +213,7 @@ export default function QuranPage() {
       setIsPlaying(false);
       setShowFullSurah(false);
       setFullSurahAyahs(null);
+      setFullSurahAudioMode(false);
 
       mutate(
         { surah: s, ayah: a },
@@ -108,15 +223,11 @@ export default function QuranPage() {
               const parsed: AlquranMultiResponse = JSON.parse(raw);
               if (parsed.code === 200 && Array.isArray(parsed.data)) {
                 setArabicData(parsed.data[0]);
-                if (parsed.data[1]) {
-                  setTranslationText(parsed.data[1].text);
-                }
-                if (parsed.data[2]) {
-                  setTransliterationText(parsed.data[2].text);
-                }
+                if (parsed.data[1]) setTranslationText(parsed.data[1].text);
+                if (parsed.data[2]) setTransliterationText(parsed.data[2].text);
               }
             } catch {
-              // ignore parse errors
+              /* ignore */
             }
           },
         },
@@ -126,12 +237,13 @@ export default function QuranPage() {
   );
 
   const handleFetchFullSurah = useCallback(
-    (s: number) => {
+    (s: number, audioOnly = false) => {
       setShowFullSurah(false);
       setFullSurahAyahs(null);
       setArabicData(null);
       setTranslationText(null);
       setTransliterationText(null);
+      setFullSurahAudioMode(audioOnly);
 
       mutateSurah(
         { surah: s },
@@ -152,6 +264,7 @@ export default function QuranPage() {
                     arabicEdition.englishName ||
                     `Surə ${s}`,
                 );
+                setFullSurahNumber(s);
                 const ayahs: SurahAyah[] = arabicEdition.ayahs.map(
                   (ayah, idx) => ({
                     numberInSurah: ayah.numberInSurah,
@@ -165,7 +278,7 @@ export default function QuranPage() {
                 setShowFullSurah(true);
               }
             } catch {
-              // ignore parse errors
+              /* ignore */
             }
           },
         },
@@ -184,7 +297,13 @@ export default function QuranPage() {
   const handleSheetFullSurah = () => {
     setBottomSheetOpen(false);
     setSheetMode("choice");
-    handleFetchFullSurah(pickerSurah);
+    handleFetchFullSurah(pickerSurah, false);
+  };
+
+  const handleSheetFullAudio = () => {
+    setBottomSheetOpen(false);
+    setSheetMode("choice");
+    handleFetchFullSurah(pickerSurah, true);
   };
 
   const handleSheetAyah = () => {
@@ -196,9 +315,7 @@ export default function QuranPage() {
   useEffect(() => {
     if (searchParams.q) {
       const match = searchParams.q.match(/^(\d+):(\d+)$/);
-      if (match) {
-        handleFetch(Number(match[1]), Number(match[2]));
-      }
+      if (match) handleFetch(Number(match[1]), Number(match[2]));
     }
   }, [searchParams.q, handleFetch]);
 
@@ -215,7 +332,6 @@ export default function QuranPage() {
 
   return (
     <div className="islamic-bg-pattern min-h-screen">
-      {/* Header */}
       <div className="hero-gradient py-12 px-4">
         <div className="container mx-auto text-center">
           <p
@@ -228,7 +344,7 @@ export default function QuranPage() {
             {t("quran")}
           </h1>
           <p className="text-white/60">
-            Quranı tərtiblə oxu — əl-Müzzəmmil 73:4
+            Quranı tərtiblə oxu — əl-Müz zəmmil 73:4
           </p>
         </div>
       </div>
@@ -245,7 +361,7 @@ export default function QuranPage() {
           </TabsList>
 
           <TabsContent value="verse">
-            {/* Surah picker section */}
+            {/* Surah picker */}
             <div className="mb-6 p-4 rounded-xl border border-border bg-card">
               <h3 className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-2">
                 <BookOpen className="w-4 h-4" />
@@ -311,7 +427,7 @@ export default function QuranPage() {
               </div>
             </div>
 
-            {/* Fetch form */}
+            {/* Manual fetch */}
             <div className="flex gap-3 mb-8">
               <div className="flex-1">
                 <label
@@ -407,13 +523,45 @@ export default function QuranPage() {
                     <h2 className="text-white font-bold text-lg">
                       {fullSurahName}
                     </h2>
-                    <span
-                      style={{ color: "oklch(var(--islamic-gold))" }}
-                      className="text-sm"
-                    >
-                      {fullSurahAyahs.length} ayə
-                    </span>
+                    <div className="flex items-center gap-3">
+                      <span
+                        style={{ color: "oklch(var(--islamic-gold))" }}
+                        className="text-sm"
+                      >
+                        {fullSurahAyahs.length} ayə
+                      </span>
+                      <button
+                        type="button"
+                        className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full"
+                        style={
+                          fullSurahAudioMode
+                            ? {
+                                backgroundColor: "oklch(var(--islamic-gold))",
+                                color: "oklch(var(--islamic-dark))",
+                              }
+                            : {
+                                backgroundColor:
+                                  "oklch(var(--islamic-gold) / 0.15)",
+                                color: "oklch(var(--islamic-gold))",
+                              }
+                        }
+                        onClick={() => setFullSurahAudioMode((m) => !m)}
+                      >
+                        <Headphones className="w-3.5 h-3.5" />
+                        {fullSurahAudioMode ? "Ses açıq" : "Tam dinlə"}
+                      </button>
+                    </div>
                   </div>
+
+                  {fullSurahAudioMode && (
+                    <div className="card-gradient px-6 pb-4">
+                      <FullSurahPlayer
+                        surahNumber={fullSurahNumber}
+                        ayahs={fullSurahAyahs}
+                      />
+                    </div>
+                  )}
+
                   <div className="bg-card border-x border-b border-border rounded-b-2xl divide-y divide-border">
                     {fullSurahAyahs.map((ayah, idx) => (
                       <div
@@ -463,7 +611,6 @@ export default function QuranPage() {
                   exit={{ opacity: 0, y: -10 }}
                   className="rounded-2xl overflow-hidden shadow-gold"
                 >
-                  {/* Surah info */}
                   <div className="card-gradient px-6 py-4">
                     <div className="flex items-center justify-between text-white/70 text-sm">
                       <span>
@@ -474,8 +621,6 @@ export default function QuranPage() {
                       </span>
                     </div>
                   </div>
-
-                  {/* Arabic text */}
                   <div className="card-gradient px-6 pb-2">
                     <p
                       className="font-amiri text-3xl leading-loose text-right text-white py-4"
@@ -485,8 +630,6 @@ export default function QuranPage() {
                       {arabicData.text}
                     </p>
                   </div>
-
-                  {/* Transliteration */}
                   {transliterationText && (
                     <div className="card-gradient px-6 pb-4">
                       <p
@@ -497,16 +640,12 @@ export default function QuranPage() {
                       </p>
                     </div>
                   )}
-
-                  {/* Translation */}
                   <div className="bg-card border-x border-b border-border rounded-b-2xl px-6 py-5">
                     {translationText && (
                       <p className="text-foreground leading-relaxed">
                         {translationText}
                       </p>
                     )}
-
-                    {/* Audio player */}
                     <div className="mt-4 pt-4 border-t border-border">
                       <div className="flex items-center gap-3">
                         <button
@@ -569,7 +708,7 @@ export default function QuranPage() {
                   className="font-amiri text-2xl mb-4"
                   style={{ color: "oklch(var(--islamic-gold))" }}
                 >
-                  اِسْتَمِعُوا لَهُ وَأَنصِتُوا
+                  اِسْتَمِعُوا لَهُ وَأنصِتُوا
                 </p>
                 <h3 className="text-xl font-bold mb-2">
                   Mishary Rashid Alafasy
@@ -627,7 +766,7 @@ export default function QuranPage() {
         </Tabs>
       </div>
 
-      {/* Bottom Sheet Overlay */}
+      {/* Bottom Sheet */}
       <AnimatePresence>
         {bottomSheetOpen && (
           <>
@@ -649,11 +788,9 @@ export default function QuranPage() {
               className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl overflow-hidden"
               style={{ backgroundColor: "oklch(var(--islamic-dark))" }}
             >
-              {/* Handle bar */}
               <div className="flex justify-center pt-3 pb-1">
                 <div className="w-12 h-1 rounded-full bg-white/20" />
               </div>
-
               <div className="px-6 pb-8 pt-4">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-white font-bold text-lg">
@@ -683,6 +820,16 @@ export default function QuranPage() {
                     >
                       <BookOpen className="w-5 h-5" />
                       Tam surəni göstər
+                    </button>
+                    <button
+                      type="button"
+                      data-ocid="quran.audio_button"
+                      onClick={handleSheetFullAudio}
+                      className="w-full py-4 rounded-2xl font-semibold text-white flex items-center justify-center gap-3 transition-opacity hover:opacity-90"
+                      style={{ backgroundColor: "oklch(0.3 0.08 200)" }}
+                    >
+                      <Headphones className="w-5 h-5" />
+                      Tam surəni dinlə
                     </button>
                     <button
                       type="button"
