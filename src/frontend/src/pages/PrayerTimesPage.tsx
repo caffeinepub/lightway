@@ -4,6 +4,7 @@ import { useSearch } from "@tanstack/react-router";
 import { Loader2, MapPin, Search } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import NamazGuide from "../components/NamazGuide";
 import { useI18n } from "../contexts/i18n";
 import { useFetchPrayerTimes } from "../hooks/useQueries";
 
@@ -322,6 +323,11 @@ export default function PrayerTimesPage() {
                   </motion.div>
                 );
               })}
+            </div>
+
+            {/* Namaz Guide */}
+            <div className="max-w-3xl mx-auto mt-6">
+              <NamazGuide />
             </div>
           </motion.div>
         )}

@@ -4,6 +4,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSearch } from "@tanstack/react-router";
 import {
   BookOpen,
+  ChevronDown,
+  ChevronRight,
   Headphones,
   Loader2,
   Pause,
@@ -59,6 +61,173 @@ const WELL_KNOWN = [
   { label: "əl-İxlas 112:1", surah: 112, ayah: 1 },
   { label: "əl-Fələq 113:1", surah: 113, ayah: 1 },
   { label: "ən-Nas 114:1", surah: 114, ayah: 1 },
+];
+
+const PRAYER_CATEGORIES = [
+  {
+    id: "qorunma",
+    title: "🛡️ Qorunma duaları",
+    items: [
+      { label: "Surah Al-Ikhlas", surah: 112 },
+      { label: "Surah Al-Falaq", surah: 113 },
+      { label: "Surah An-Nas", surah: 114 },
+      { label: "Ayat al-Kursi", surah: 2, ayahStart: 255, ayahEnd: 255 },
+      {
+        label: "Surah Al-Baqarah 285-286",
+        surah: 2,
+        ayahStart: 285,
+        ayahEnd: 286,
+      },
+      {
+        label: "Surah Al-Mu'minun 115-118",
+        surah: 23,
+        ayahStart: 115,
+        ayahEnd: 118,
+      },
+      { label: "Surah As-Saffat 1-10", surah: 37, ayahStart: 1, ayahEnd: 10 },
+    ],
+  },
+  {
+    id: "bereket",
+    title: "🌿 Bərəkət və ruzi",
+    items: [
+      { label: "Surah Al-Waqi'ah", surah: 56 },
+      { label: "Ayat al-Kursi", surah: 2, ayahStart: 255, ayahEnd: 255 },
+      {
+        label: "Surah Al-Baqarah 285-286",
+        surah: 2,
+        ayahStart: 285,
+        ayahEnd: 286,
+      },
+      { label: "Surah At-Talaq 2-3", surah: 65, ayahStart: 2, ayahEnd: 3 },
+      { label: "Surah Nuh 10-12", surah: 71, ayahStart: 10, ayahEnd: 12 },
+      { label: "Surah Adh-Dhariyat 58", surah: 51, ayahStart: 58, ayahEnd: 58 },
+      { label: "Surah Ibrahim 7", surah: 14, ayahStart: 7, ayahEnd: 7 },
+      { label: "Surah Al-Imran 159", surah: 3, ayahStart: 159, ayahEnd: 159 },
+    ],
+  },
+  {
+    id: "sevgi",
+    title: "❤️ Sevgi və münasibətlər",
+    items: [
+      { label: "Surah Ar-Rum 21", surah: 30, ayahStart: 21, ayahEnd: 21 },
+      { label: "Surah Al-Furqan 74", surah: 25, ayahStart: 74, ayahEnd: 74 },
+      { label: "Surah An-Nisa 19", surah: 4, ayahStart: 19, ayahEnd: 19 },
+      { label: "Surah Al-Baqarah 187", surah: 2, ayahStart: 187, ayahEnd: 187 },
+      { label: "Surah An-Nur 26", surah: 24, ayahStart: 26, ayahEnd: 26 },
+      { label: "Surah Al-Ahzab 35", surah: 33, ayahStart: 35, ayahEnd: 35 },
+      { label: "Surah Al-Hujurat 10", surah: 49, ayahStart: 10, ayahEnd: 10 },
+      { label: "Surah Yusuf", surah: 12 },
+    ],
+  },
+  {
+    id: "sakitlik",
+    title: "🕊️ Daxili sakitlik və psixologiya",
+    items: [
+      { label: "Surah Ar-Ra'd 28", surah: 13, ayahStart: 28, ayahEnd: 28 },
+      { label: "Surah Ash-Sharh 5-6", surah: 94, ayahStart: 5, ayahEnd: 6 },
+      { label: "Surah Al-Baqarah 286", surah: 2, ayahStart: 286, ayahEnd: 286 },
+      { label: "Surah Taha 25-28", surah: 20, ayahStart: 25, ayahEnd: 28 },
+      { label: "Surah Al-Fajr 27-30", surah: 89, ayahStart: 27, ayahEnd: 30 },
+      { label: "Surah Yunus 57", surah: 10, ayahStart: 57, ayahEnd: 57 },
+      { label: "Surah Ad-Duha", surah: 93 },
+      { label: "Surah Al-Inshiqaq", surah: 84 },
+      { label: "Surah Yusuf", surah: 12 },
+    ],
+  },
+  {
+    id: "guc",
+    title: "⚡ Güc və motivasiya",
+    items: [
+      { label: "Surah Al-Anfal 46", surah: 8, ayahStart: 46, ayahEnd: 46 },
+      { label: "Surah Al-Imran 139", surah: 3, ayahStart: 139, ayahEnd: 139 },
+      { label: "Surah At-Tawbah 51", surah: 9, ayahStart: 51, ayahEnd: 51 },
+      { label: "Surah Al-Fath 1", surah: 48, ayahStart: 1, ayahEnd: 1 },
+      { label: "Surah Ash-Sharh 5-6", surah: 94, ayahStart: 5, ayahEnd: 6 },
+      { label: "Surah Al-Baqarah 153", surah: 2, ayahStart: 153, ayahEnd: 153 },
+      { label: "Surah Muhammad", surah: 47 },
+      { label: "Surah Al-Asr", surah: 103 },
+    ],
+  },
+  {
+    id: "hidayet",
+    title: "🌟 Hidayət və doğru yol",
+    items: [
+      { label: "Surah Al-Fatiha", surah: 1 },
+      { label: "Surah Al-Baqarah 2", surah: 2, ayahStart: 2, ayahEnd: 2 },
+      { label: "Surah Al-Baqarah 286", surah: 2, ayahStart: 286, ayahEnd: 286 },
+      { label: "Surah Al-Imran 8", surah: 3, ayahStart: 8, ayahEnd: 8 },
+      { label: "Surah Al-Imran 101", surah: 3, ayahStart: 101, ayahEnd: 101 },
+      { label: "Surah An-Nisa 175", surah: 4, ayahStart: 175, ayahEnd: 175 },
+      { label: "Surah Al-Ma'idah 16", surah: 5, ayahStart: 16, ayahEnd: 16 },
+      { label: "Surah Al-An'am 153", surah: 6, ayahStart: 153, ayahEnd: 153 },
+      { label: "Surah Yunus 25", surah: 10, ayahStart: 25, ayahEnd: 25 },
+      { label: "Surah Hud 112", surah: 11, ayahStart: 112, ayahEnd: 112 },
+      { label: "Surah An-Nahl 90", surah: 16, ayahStart: 90, ayahEnd: 90 },
+      { label: "Surah Al-Isra 9", surah: 17, ayahStart: 9, ayahEnd: 9 },
+      { label: "Surah Al-Kahf", surah: 18 },
+      { label: "Surah Taha 123", surah: 20, ayahStart: 123, ayahEnd: 123 },
+      { label: "Surah Az-Zumar 18", surah: 39, ayahStart: 18, ayahEnd: 18 },
+      { label: "Surah Ash-Shura 52", surah: 42, ayahStart: 52, ayahEnd: 52 },
+      { label: "Surah Al-Jathiyah 20", surah: 45, ayahStart: 20, ayahEnd: 20 },
+      { label: "Surah Al-Ahzab 36", surah: 33, ayahStart: 36, ayahEnd: 36 },
+    ],
+  },
+];
+
+const QARAR_STEPS = [
+  {
+    step: 1,
+    title: "Başlanğıc (niyyəti təmizləmək)",
+    surah: 1,
+    label: "Surah Al-Fatiha",
+    məqsəd: '"Məni doğru yola yönəlt" fokusuna girmək',
+  },
+  {
+    step: 2,
+    title: "Qəlbi sabitləşdirmək",
+    surah: 3,
+    ayahStart: 8,
+    ayahEnd: 8,
+    label: "Surah Al-Imran 8",
+    məqsəd: "Qarışıqlıq → sakitlik",
+  },
+  {
+    step: 3,
+    title: "Aydınlıq və doğru seçim",
+    surah: 39,
+    ayahStart: 18,
+    ayahEnd: 18,
+    label: "Surah Az-Zumar 18",
+    məqsəd: 'Variantlar içində "ən doğrusunu" seçmək',
+  },
+  {
+    step: 4,
+    title: "Qərar gücü (tərəddüdü qırmaq)",
+    surah: 33,
+    ayahStart: 36,
+    ayahEnd: 36,
+    label: "Surah Al-Ahzab 36",
+    məqsəd: '"Qərar verdim və davam edirəm" vəziyyəti',
+  },
+  {
+    step: 5,
+    title: "Təvəkkül (buraxmaq və hərəkət)",
+    surah: 3,
+    ayahStart: 159,
+    ayahEnd: 159,
+    label: "Surah Al-Imran 159",
+    məqsəd: "Qərardan sonra stress etməmək",
+  },
+  {
+    step: 6,
+    title: "Qorxunu sıfırlamaq",
+    surah: 20,
+    ayahStart: 123,
+    ayahEnd: 123,
+    label: "Surah Taha 123",
+    məqsəd: '"Ya səhv etsəm?" düşüncəsini silmək',
+  },
 ];
 
 function padNum(n: number, len: number) {
@@ -184,9 +353,413 @@ function FullSurahPlayer({
   );
 }
 
+// InlineAyahContent: fetches and displays ayahs inline
+function InlineAyahContent({
+  surah,
+  ayahStart,
+  ayahEnd,
+}: {
+  surah: number;
+  ayahStart?: number;
+  ayahEnd?: number;
+}) {
+  const [ayahs, setAyahs] = useState<SurahAyah[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setFetchError(false);
+    setAyahs(null);
+
+    fetch(
+      `https://api.alquran.cloud/v1/surah/${surah}/editions/quran-simple,az.mammadaliyev,en.transliteration`,
+    )
+      .then((r) => r.json())
+      .then((parsed: AlquranSurahResponse) => {
+        if (cancelled) return;
+        if (
+          parsed.code === 200 &&
+          Array.isArray(parsed.data) &&
+          parsed.data.length >= 3
+        ) {
+          const ar = parsed.data[0];
+          const tr = parsed.data[1];
+          const tlit = parsed.data[2];
+          let result: SurahAyah[] = ar.ayahs.map((a, idx) => ({
+            numberInSurah: a.numberInSurah,
+            arabic: a.text,
+            translation: tr.ayahs[idx]?.text || "",
+            transliteration: tlit.ayahs[idx]?.text || "",
+          }));
+          if (ayahStart !== undefined && ayahEnd !== undefined) {
+            result = result.filter(
+              (a) => a.numberInSurah >= ayahStart && a.numberInSurah <= ayahEnd,
+            );
+          }
+          setAyahs(result);
+        } else {
+          setFetchError(true);
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setFetchError(true);
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [surah, ayahStart, ayahEnd]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-6">
+        <Loader2
+          className="w-6 h-6 animate-spin"
+          style={{ color: "oklch(var(--islamic-gold))" }}
+        />
+      </div>
+    );
+  }
+
+  if (fetchError || !ayahs) {
+    return (
+      <p className="text-white/50 text-xs text-center py-4">
+        Yüklənə bilmədi. Yenidən cəhd edin.
+      </p>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-4 py-3">
+      {ayahs.map((ayah) => (
+        <div key={ayah.numberInSurah} className="flex flex-col gap-1">
+          <p
+            className="text-right text-2xl leading-loose font-amiri"
+            style={{ color: "oklch(var(--islamic-gold))" }}
+            dir="rtl"
+          >
+            {ayah.arabic}
+          </p>
+          <p className="text-white/50 text-xs italic text-center">
+            {ayah.transliteration}
+          </p>
+          <p className="text-white/80 text-sm">{ayah.translation}</p>
+          {/* biome-ignore lint/a11y/useMediaCaption: Quran recitation */}
+          <audio
+            controls
+            src={getAudioUrl(surah, ayah.numberInSurah)}
+            className="w-full mt-1 h-8"
+            style={{ accentColor: "oklch(var(--islamic-gold))" }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function PrayerCategoryAccordion({
+  category,
+}: {
+  category: (typeof PRAYER_CATEGORIES)[number];
+}) {
+  const [open, setOpen] = useState(false);
+  const [expandedItemKey, setExpandedItemKey] = useState<string | null>(null);
+
+  const toggleItem = (key: string) => {
+    setExpandedItemKey((prev) => (prev === key ? null : key));
+  };
+
+  return (
+    <div
+      className="rounded-2xl overflow-hidden mb-3"
+      style={{ border: "1px solid oklch(var(--islamic-gold) / 0.25)" }}
+    >
+      <button
+        type="button"
+        data-ocid="dualar.tab"
+        className="w-full flex items-center justify-between px-5 py-4 text-left font-semibold text-white transition-colors"
+        style={{ backgroundColor: "oklch(0.18 0.05 155)" }}
+        onClick={() => setOpen((o) => !o)}
+      >
+        <span className="text-base">{category.title}</span>
+        {open ? (
+          <ChevronDown
+            className="w-5 h-5"
+            style={{ color: "oklch(var(--islamic-gold))" }}
+          />
+        ) : (
+          <ChevronRight
+            className="w-5 h-5"
+            style={{ color: "oklch(var(--islamic-gold))" }}
+          />
+        )}
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="content"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22 }}
+            className="overflow-hidden"
+          >
+            <div
+              className="px-4 py-3 flex flex-col gap-2"
+              style={{ backgroundColor: "oklch(0.14 0.04 155)" }}
+            >
+              {category.items.map((item) => {
+                const key = `${item.surah}-${item.ayahStart ?? "full"}`;
+                const isExpanded = expandedItemKey === key;
+                return (
+                  <div key={key} className="rounded-xl overflow-hidden">
+                    <button
+                      type="button"
+                      data-ocid="dualar.button"
+                      className="w-full text-left px-4 py-3 text-sm font-medium text-white transition-opacity hover:opacity-80 flex items-center justify-between gap-2"
+                      style={{
+                        backgroundColor: isExpanded
+                          ? "oklch(var(--islamic-green))"
+                          : "oklch(var(--islamic-green) / 0.75)",
+                      }}
+                      onClick={() => toggleItem(key)}
+                    >
+                      <span>{item.label}</span>
+                      {isExpanded ? (
+                        <ChevronDown className="w-4 h-4 opacity-70 shrink-0" />
+                      ) : (
+                        <ChevronRight className="w-4 h-4 opacity-60 shrink-0" />
+                      )}
+                    </button>
+                    <AnimatePresence initial={false}>
+                      {isExpanded && (
+                        <motion.div
+                          key="ayah-content"
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <div
+                            className="px-4"
+                            style={{
+                              backgroundColor: "oklch(0.11 0.03 155)",
+                              borderTop:
+                                "1px solid oklch(var(--islamic-gold) / 0.15)",
+                            }}
+                          >
+                            <InlineAyahContent
+                              surah={item.surah}
+                              ayahStart={item.ayahStart}
+                              ayahEnd={item.ayahEnd}
+                            />
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function QararSection() {
+  const [open, setOpen] = useState(false);
+  const [expandedStepKey, setExpandedStepKey] = useState<string | null>(null);
+
+  const toggleStep = (key: string) => {
+    setExpandedStepKey((prev) => (prev === key ? null : key));
+  };
+
+  return (
+    <div
+      className="rounded-2xl overflow-hidden mt-6"
+      style={{ border: "1px solid oklch(var(--islamic-gold) / 0.5)" }}
+    >
+      {/* Accordion Header */}
+      <button
+        type="button"
+        data-ocid="dualar.tab"
+        className="w-full flex items-center justify-between px-5 py-5 text-left"
+        style={{
+          background:
+            "linear-gradient(135deg, oklch(0.22 0.08 270), oklch(0.18 0.06 270))",
+        }}
+        onClick={() => setOpen((o) => !o)}
+      >
+        <div>
+          <h3 className="text-white font-bold text-base mb-0.5">
+            🧭 QƏRAR VERƏ BİLMƏYƏNDƏ – AYƏ SİSTEMİ
+          </h3>
+          <p className="text-white/60 text-xs">
+            6 addımlı ayə sistemi ilə qərar ver
+          </p>
+        </div>
+        {open ? (
+          <ChevronDown
+            className="w-5 h-5 shrink-0 ml-3"
+            style={{ color: "oklch(var(--islamic-gold))" }}
+          />
+        ) : (
+          <ChevronRight
+            className="w-5 h-5 shrink-0 ml-3"
+            style={{ color: "oklch(var(--islamic-gold))" }}
+          />
+        )}
+      </button>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="qarar-body"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22 }}
+            className="overflow-hidden"
+          >
+            {/* Steps */}
+            <div
+              style={{
+                backgroundColor: "oklch(0.14 0.04 270)",
+              }}
+            >
+              {QARAR_STEPS.map((step) => {
+                const key = `qarar-${step.step}`;
+                const isExpanded = expandedStepKey === key;
+                return (
+                  <div
+                    key={step.step}
+                    className="border-b"
+                    style={{ borderColor: "oklch(var(--islamic-gold) / 0.1)" }}
+                  >
+                    <div className="px-5 py-4">
+                      <div className="flex items-start gap-3 mb-3">
+                        <span
+                          className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+                          style={{
+                            backgroundColor: "oklch(var(--islamic-gold) / 0.2)",
+                            color: "oklch(var(--islamic-gold))",
+                            border:
+                              "1px solid oklch(var(--islamic-gold) / 0.4)",
+                          }}
+                        >
+                          {step.step}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-white font-semibold text-sm">
+                            {step.title}
+                          </p>
+                          <p
+                            className="text-xs italic mt-0.5"
+                            style={{
+                              color: "oklch(var(--islamic-gold) / 0.7)",
+                            }}
+                          >
+                            {step.məqsəd}
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        data-ocid="dualar.button"
+                        className="w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-opacity hover:opacity-80 flex items-center justify-between gap-2"
+                        style={{
+                          backgroundColor: isExpanded
+                            ? "oklch(0.32 0.09 270)"
+                            : "oklch(0.28 0.08 270)",
+                        }}
+                        onClick={() => toggleStep(key)}
+                      >
+                        <span>{step.label}</span>
+                        {isExpanded ? (
+                          <ChevronDown className="w-4 h-4 opacity-60 shrink-0" />
+                        ) : (
+                          <ChevronRight className="w-4 h-4 opacity-50 shrink-0" />
+                        )}
+                      </button>
+                      <AnimatePresence initial={false}>
+                        {isExpanded && (
+                          <motion.div
+                            key="step-content"
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden"
+                          >
+                            <div
+                              className="px-4 mt-2 rounded-xl"
+                              style={{
+                                backgroundColor: "oklch(0.10 0.03 270)",
+                                border:
+                                  "1px solid oklch(var(--islamic-gold) / 0.15)",
+                              }}
+                            >
+                              <InlineAyahContent
+                                surah={step.surah}
+                                ayahStart={step.ayahStart}
+                                ayahEnd={step.ayahEnd}
+                              />
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Usage tip */}
+            <div
+              className="px-5 py-4"
+              style={{
+                backgroundColor: "oklch(0.12 0.03 270)",
+                borderTop: "1px solid oklch(var(--islamic-gold) / 0.2)",
+              }}
+            >
+              <p
+                className="text-xs font-bold mb-2"
+                style={{ color: "oklch(var(--islamic-gold))" }}
+              >
+                ⚡ NECƏ İSTİFADƏ ET (3 dəqiqəlik sistem)
+              </p>
+              <ol className="text-white/60 text-xs space-y-1 list-decimal list-inside">
+                <li>Sakit otur</li>
+                <li>Bu ayələri ardıcıl oxu</li>
+                <li>
+                  1 sual ver:{" "}
+                  <span className="italic text-white/80">
+                    "Ən doğru addım hansıdır?"
+                  </span>
+                </li>
+                <li>İlk gələn aydın hiss → onu seç</li>
+              </ol>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 export default function QuranPage() {
   const { t } = useI18n();
   const searchParams = useSearch({ strict: false }) as { q?: string };
+  const [activeTab, setActiveTab] = useState("verse");
   const [surahNum, setSurahNum] = useState("1");
   const [ayahNum, setAyahNum] = useState("1");
   const [arabicData, setArabicData] = useState<QuranVerseData | null>(null);
@@ -199,7 +772,7 @@ export default function QuranPage() {
   const { mutate, isPending, error } = useFetchQuranVerse();
 
   const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
-  const [pickerSurah, setPickerSurah] = useState(1);
+  const [pickerSurah, setPickerSurah] = useState("1");
   const [sheetMode, setSheetMode] = useState<"choice" | "ayah-input">("choice");
   const [sheetAyahNum, setSheetAyahNum] = useState("1");
 
@@ -297,8 +870,67 @@ export default function QuranPage() {
     [mutateSurah],
   );
 
-  const openBottomSheet = (s: number) => {
-    setPickerSurah(s);
+  const handleFetchAyahRange = useCallback(
+    (s: number, start: number, end: number) => {
+      setShowFullSurah(false);
+      setFullSurahAyahs(null);
+      setArabicData(null);
+      mutateSurah(
+        { surah: s },
+        {
+          onSuccess: (raw) => {
+            try {
+              const parsed: AlquranSurahResponse = JSON.parse(raw);
+              if (
+                parsed.code === 200 &&
+                Array.isArray(parsed.data) &&
+                parsed.data.length >= 3
+              ) {
+                const arabicEdition = parsed.data[0];
+                const translationEdition = parsed.data[1];
+                const transliterationEdition = parsed.data[2];
+                setFullSurahName(arabicEdition.englishName || `Surə ${s}`);
+                setFullSurahNumber(s);
+                const allAyahs: SurahAyah[] = arabicEdition.ayahs.map(
+                  (ayah, idx) => ({
+                    numberInSurah: ayah.numberInSurah,
+                    arabic: ayah.text,
+                    translation: translationEdition.ayahs[idx]?.text || "",
+                    transliteration:
+                      transliterationEdition.ayahs[idx]?.text || "",
+                  }),
+                );
+                const filtered = allAyahs.filter(
+                  (a) => a.numberInSurah >= start && a.numberInSurah <= end,
+                );
+                setFullSurahAyahs(filtered);
+                setShowFullSurah(true);
+                setFullSurahAudioMode(false);
+              }
+            } catch {
+              /* ignore */
+            }
+          },
+        },
+      );
+    },
+    [mutateSurah],
+  );
+
+  const _handlePrayerItemClick = useCallback(
+    (item: { surah: number; ayahStart?: number; ayahEnd?: number }) => {
+      setActiveTab("verse");
+      if (item.ayahStart !== undefined && item.ayahEnd !== undefined) {
+        handleFetchAyahRange(item.surah, item.ayahStart, item.ayahEnd);
+      } else {
+        handleFetchFullSurah(item.surah, false);
+      }
+    },
+    [handleFetchAyahRange, handleFetchFullSurah],
+  );
+
+  const openBottomSheet = (s: number | string) => {
+    setPickerSurah(String(s));
     setSheetMode("choice");
     setSheetAyahNum("1");
     setBottomSheetOpen(true);
@@ -307,19 +939,19 @@ export default function QuranPage() {
   const handleSheetFullSurah = () => {
     setBottomSheetOpen(false);
     setSheetMode("choice");
-    handleFetchFullSurah(pickerSurah, false);
+    handleFetchFullSurah(Number(pickerSurah) || 1, false);
   };
 
   const handleSheetFullAudio = () => {
     setBottomSheetOpen(false);
     setSheetMode("choice");
-    handleFetchFullSurah(pickerSurah, true);
+    handleFetchFullSurah(Number(pickerSurah) || 1, true);
   };
 
   const handleSheetAyah = () => {
     setBottomSheetOpen(false);
     setSheetMode("choice");
-    handleFetch(pickerSurah, Number.parseInt(sheetAyahNum) || 1);
+    handleFetch(Number(pickerSurah) || 1, Number.parseInt(sheetAyahNum) || 1);
   };
 
   useEffect(() => {
@@ -360,13 +992,24 @@ export default function QuranPage() {
       </div>
 
       <div className="container mx-auto px-4 py-10">
-        <Tabs defaultValue="verse" className="max-w-3xl mx-auto">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="max-w-3xl mx-auto"
+        >
           <TabsList className="w-full mb-8" data-ocid="quran.tab">
             <TabsTrigger value="verse" className="flex-1" data-ocid="quran.tab">
               {t("byVerse")}
             </TabsTrigger>
             <TabsTrigger value="audio" className="flex-1" data-ocid="quran.tab">
               {t("byAudio")}
+            </TabsTrigger>
+            <TabsTrigger
+              value="dualar"
+              className="flex-1"
+              data-ocid="dualar.tab"
+            >
+              Dualar
             </TabsTrigger>
           </TabsList>
 
@@ -392,11 +1035,7 @@ export default function QuranPage() {
                     min={1}
                     max={114}
                     value={pickerSurah}
-                    onChange={(e) =>
-                      setPickerSurah(
-                        Math.min(114, Math.max(1, Number(e.target.value))),
-                      )
-                    }
+                    onChange={(e) => setPickerSurah(e.target.value)}
                     onKeyDown={(e) =>
                       e.key === "Enter" && openBottomSheet(pickerSurah)
                     }
@@ -799,6 +1438,38 @@ export default function QuranPage() {
                   data-ocid="quran.editor"
                 />
               </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="dualar">
+            <div className="max-w-2xl mx-auto space-y-2">
+              {/* Header */}
+              <div
+                className="rounded-2xl px-5 py-4 mb-6"
+                style={{
+                  background:
+                    "linear-gradient(135deg, oklch(0.2 0.07 155), oklch(0.16 0.05 155))",
+                  border: "1px solid oklch(var(--islamic-gold) / 0.35)",
+                }}
+              >
+                <p
+                  className="font-amiri text-2xl text-center mb-1"
+                  style={{ color: "oklch(var(--islamic-gold))" }}
+                >
+                  ادْعُونِي أَسْتَجِبْ لَكُمْ
+                </p>
+                <p className="text-white/50 text-xs text-center">
+                  Mənə dua edin, qəbul edim — Qafir 40:60
+                </p>
+              </div>
+
+              {/* 6 main categories */}
+              {PRAYER_CATEGORIES.map((cat) => (
+                <PrayerCategoryAccordion key={cat.id} category={cat} />
+              ))}
+
+              {/* QARAR special section - collapsible accordion */}
+              <QararSection />
             </div>
           </TabsContent>
         </Tabs>
