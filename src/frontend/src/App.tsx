@@ -15,6 +15,7 @@ import ArabicLearnPage from "./pages/ArabicLearnPage";
 import BooksPage from "./pages/BooksPage";
 import HomePage from "./pages/HomePage";
 import PrayerTimesPage from "./pages/PrayerTimesPage";
+import QiblaPage from "./pages/QiblaPage";
 import QuranPage from "./pages/QuranPage";
 
 const queryClient = new QueryClient({
@@ -76,6 +77,12 @@ const arabicLearnRoute = createRoute({
   component: ArabicLearnPage,
 });
 
+const qiblaRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/qibla",
+  component: QiblaPage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   prayerTimesRoute,
@@ -83,6 +90,7 @@ const routeTree = rootRoute.addChildren([
   booksRoute,
   adminRoute,
   arabicLearnRoute,
+  qiblaRoute,
 ]);
 
 const router = createRouter({ routeTree });

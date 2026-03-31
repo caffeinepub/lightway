@@ -556,10 +556,23 @@ const HARAKAT_QUIZ = [
 function speakArabic(text: string) {
   if (!window.speechSynthesis) return;
   window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "ar-SA";
-  utterance.rate = 0.8;
-  window.speechSynthesis.speak(utterance);
+  const doSpeak = () => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "ar-SA";
+    utterance.rate = 0.8;
+    const voices = window.speechSynthesis.getVoices();
+    const arabicVoice = voices.find((v) => v.lang.startsWith("ar"));
+    if (arabicVoice) utterance.voice = arabicVoice;
+    window.speechSynthesis.speak(utterance);
+  };
+  const voices = window.speechSynthesis.getVoices();
+  if (voices.length === 0) {
+    window.speechSynthesis.addEventListener("voiceschanged", doSpeak, {
+      once: true,
+    });
+  } else {
+    doSpeak();
+  }
 }
 
 function shuffle<T>(arr: T[]): T[] {
